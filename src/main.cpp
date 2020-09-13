@@ -1,17 +1,21 @@
 /*Напишите функцию, которая:
- * называется IsPalindrom
- * возвращает bool
- * принимает параметр типа string и возвращает, является ли переданная строка палиндромом
+ * называется PalindromFilter
+ * возвращает vector<string>
+ * принимает vector<string> words и int minLength и возвращает все строки из вектора words,
+ * которые являются палиндромами и имеют длину не меньше minLength
  *
- * Палиндром - это слово или фраза, которые одинаково читаются слева направо и справа налево. Пустая строка является палиндромом.*/
+ * Входной вектор содержит не более 100 строк, длина каждой строки не больше 100 символов.*/
 
 #include <iostream>
-#include <string>
-#include "../include/IsPalindrom.h"
+#include <vector>
+#include "../include/PalindromFilter.h"
+
+using namespace std;
 
 int main() {
-	std::string s;
-	std::cin >> s;
-	std::cout << IsPalindrom(s);
+	vector<string> words = { "abacaba", "aba" };
+	for (auto s : PalindromFilter(words, 5)) {
+		cout << s << ' ';
+	}
 	return 0;
 }
