@@ -1,32 +1,24 @@
-/*На вход дано целое положительное число N. Выведите его в двоичной системе счисления без ведущих нулей.*/
+/*Напишите функцию, которая:
+ * называется Factorial
+ * возвращает int
+ * принимает int и возвращает факториал своего аргумента.
+ *
+ * Гарантируется, что аргумент функции по модулю не превышает 10. Для отрицательных аргументов функция должна возвращать 1.*/
 
 #include <iostream>
-#include <vector>
-
 using namespace std;
 
+int Factorial(int x) {
+	int result = 1;
+	for (int i = 2; i <= x; i++) {
+		result *= i;
+	}
+	return result;
+}
+
 int main() {
-
-	unsigned int N;
-	vector<short int> result;
-
-	cin >> N;
-
-	while (N > 1) {
-		result.push_back(N % 2);
-		N /= 2;
-	}
-
-	result.push_back(N);
-
-	bool beginOutoutFlag = false;
-	for (int i = result.size() + 1; i >= 0; i--) {
-		if (!beginOutoutFlag && result[i] == 1) {
-			beginOutoutFlag = true;
-		}
-		if (beginOutoutFlag) {
-			cout << result[i];
-		}
-	}
+	int x;
+	cin >> x;
+	cout << Factorial(x);
 	return 0;
 }
