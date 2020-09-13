@@ -1,21 +1,33 @@
-/*Дано два целых числа A и B (A <= B, A >= 1, B <= 30000). Выведите через пробел все чётные числа от A до B (включительно).*/
+/*Дана строка.
+ * Найдите в этой строке второе вхождение буквы f и выведите индекс этого вхождения.
+ * Если буква f в данной строке встречается только один раз, выведите число -1,
+ * а если не встречается ни разу, выведите число -2.
+ * Индексы нумеруются с нуля.*/
 
 #include <iostream>
+#include <string>
 using namespace std;
 
 int main() {
 
-	unsigned short int A, B;
+	string s;
+	unsigned int occurenceIterator = 0;
+	cin >> s;
 
-	cin >> A >> B;
-
-	for (unsigned short int i = A; i <= B; i++) {
-		if (i % 2 == 0) {
-			cout << i;
-			if (i != B) {
-				cout << ' ';
-			}
+	for (int i = 0; i < s.size(); i++) {
+		if (s[i] == 'f') {
+			occurenceIterator++;
 		}
+		if (occurenceIterator == 2) {
+			cout << i;
+			return 0;
+		}
+	}
+
+	if (occurenceIterator == 0) {
+		cout << -2;
+	} else if (occurenceIterator == 1) {
+		cout << -1;
 	}
 
 	return 0;
