@@ -1,24 +1,17 @@
 /*Напишите функцию, которая:
- * называется Factorial
- * возвращает int
- * принимает int и возвращает факториал своего аргумента.
+ * называется IsPalindrom
+ * возвращает bool
+ * принимает параметр типа string и возвращает, является ли переданная строка палиндромом
  *
- * Гарантируется, что аргумент функции по модулю не превышает 10. Для отрицательных аргументов функция должна возвращать 1.*/
+ * Палиндром - это слово или фраза, которые одинаково читаются слева направо и справа налево. Пустая строка является палиндромом.*/
 
 #include <iostream>
-using namespace std;
-
-int Factorial(int x) {
-	int result = 1;
-	for (int i = 2; i <= x; i++) {
-		result *= i;
-	}
-	return result;
-}
+#include <string>
+#include "../include/IsPalindrom.h"
 
 int main() {
-	int x;
-	cin >> x;
-	cout << Factorial(x);
+	std::string s;
+	std::cin >> s;
+	std::cout << IsPalindrom(s);
 	return 0;
 }

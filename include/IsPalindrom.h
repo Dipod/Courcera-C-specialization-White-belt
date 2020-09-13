@@ -1,0 +1,1 @@
+bool IsPalindrom(std::string s);
