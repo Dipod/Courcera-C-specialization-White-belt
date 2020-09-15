@@ -1,21 +1,20 @@
-/*Напишите функцию, которая:
- * называется PalindromFilter
- * возвращает vector<string>
- * принимает vector<string> words и int minLength и возвращает все строки из вектора words,
- * которые являются палиндромами и имеют длину не меньше minLength
- *
- * Входной вектор содержит не более 100 строк, длина каждой строки не больше 100 символов.*/
+/*Напишите функцию UpdateIfGreater, которая принимает два целочисленных аргумента: first и second.
+ * Если first оказался больше second, Ваша функция должна записывать в second значение параметра first.
+ * При этом указанная функция не должна ничего возвращать, а изменение параметра second
+ * должно быть видно на вызывающей стороне.*/
 
 #include <iostream>
-#include <vector>
-#include "../include/PalindromFilter.h"
+
+#include "../include/UpdateIfGreater.h"
 
 using namespace std;
 
 int main() {
-	vector<string> words = { "abacaba", "aba" };
-	for (auto s : PalindromFilter(words, 5)) {
-		cout << s << ' ';
-	}
+
+	int a = 4;
+	int b = 2;
+	UpdateIfGreater(a, b);
+
+	cout << b;
 	return 0;
 }
