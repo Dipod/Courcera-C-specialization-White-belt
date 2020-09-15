@@ -1,23 +1,18 @@
-/*Напишите функцию MoveStrings, которая принимает два вектора строк, source и destination,
- * и дописывает все строки из первого вектора в конец второго.
- * После выполнения функции вектор source должен оказаться пустым.*/
+/*Реализуйте функцию void Reverse(vector<int>& v), которая переставляет элементы вектора в обратном порядке.*/
 
 #include <iostream>
 #include <vector>
-#include <string>
 
 using namespace std;
 
-void MoveStrings(vector<string> &source, vector<string> &destination);
+void Reverse(vector<int>& v);
 
 int main() {
 
-	vector<string> source = { "a", "b", "c" };
-	vector<string> destination = { "z" };
+	vector<int> numbers = { 1, 5, 3, 4, 2 };
+	Reverse(numbers);
 
-	MoveStrings(source, destination);
-
-	for (auto &item : destination) {
+	for (auto &item : numbers) {
 		cout << item << ' ';
 	}
 	return 0;
