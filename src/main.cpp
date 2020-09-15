@@ -1,20 +1,24 @@
-/*Напишите функцию UpdateIfGreater, которая принимает два целочисленных аргумента: first и second.
- * Если first оказался больше second, Ваша функция должна записывать в second значение параметра first.
- * При этом указанная функция не должна ничего возвращать, а изменение параметра second
- * должно быть видно на вызывающей стороне.*/
+/*Напишите функцию MoveStrings, которая принимает два вектора строк, source и destination,
+ * и дописывает все строки из первого вектора в конец второго.
+ * После выполнения функции вектор source должен оказаться пустым.*/
 
 #include <iostream>
-
-#include "../include/UpdateIfGreater.h"
+#include <vector>
+#include <string>
 
 using namespace std;
 
+void MoveStrings(vector<string> &source, vector<string> &destination);
+
 int main() {
 
-	int a = 4;
-	int b = 2;
-	UpdateIfGreater(a, b);
+	vector<string> source = { "a", "b", "c" };
+	vector<string> destination = { "z" };
 
-	cout << b;
+	MoveStrings(source, destination);
+
+	for (auto &item : destination) {
+		cout << item << ' ';
+	}
 	return 0;
 }
