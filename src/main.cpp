@@ -1,18 +1,19 @@
-/*Реализуйте функцию void Reverse(vector<int>& v), которая переставляет элементы вектора в обратном порядке.*/
+/*Реализуйте функцию vector<int> Reversed(const vector<int>& v), возвращающую копию вектора v,
+ * в которой числа переставлены в обратном порядке.*/
 
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
-void Reverse(vector<int>& v);
+vector<int> Reversed(const vector<int>& v);
 
 int main() {
 
 	vector<int> numbers = { 1, 5, 3, 4, 2 };
-	Reverse(numbers);
+	vector<int> reversed = Reversed(numbers);
 
-	for (auto &item : numbers) {
+	for (auto &item : reversed) {
 		cout << item << ' ';
 	}
 	return 0;
