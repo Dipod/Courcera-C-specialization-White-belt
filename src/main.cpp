@@ -1,72 +1,70 @@
 /*
- Реализуйте систему хранения автобусных маршрутов. Вам нужно обрабатывать следующие запросы:
+ В этой задаче вам нужно присваивать номера автобусным маршрутам.
 
- NEW_BUS bus stop_count stop1 stop2 ... — добавить маршрут автобуса с названием bus и stop_count остановками с названиями stop1, stop2, ...
- BUSES_FOR_STOP stop — вывести названия всех маршрутов автобуса, проходящих через остановку stop.
- STOPS_FOR_BUS bus — вывести названия всех остановок маршрута bus со списком автобусов, на которые можно пересесть на каждой из остановок.
- ALL_BUSES — вывести список всех маршрутов с остановками.
+ А именно, для каждого маршрута, заданного набором названий остановок,
+ нужно либо выдать новый номер (первому маршруту — 1, второму — 2 и т. д.),
+ либо вернуть номер существующего маршрута, которому соответствует такой набор остановок.
+
+ Наборы остановок, полученные друг из друга перестановкой остановок, считаются различными (см. пример).
+
+ Указание
+
+ В C++ ключом словаря может быть не только число или строка,
+ но и другой контейнер, например, vector.
 
  Формат ввода
 
- В первой строке ввода содержится количество запросов Q, затем в Q строках следуют описания запросов.
+ Сначала вводится количество запросов Q, затем Q описаний запросов.
 
- Гарантируется, что все названия маршрутов и остановок состоят лишь из латинских букв, цифр и знаков подчёркивания.
-
- Для каждого запроса NEW_BUS bus stop_count stop1 stop2 ... гарантируется, что маршрут bus отсутствует, количество остановок больше 0,
- а после числа stop_count следует именно такое количество названий остановок, причём все названия в каждом списке различны.
+ Каждый запрос представляет собой положительное количество остановок N,
+ за которым следуют разделённые пробелом N различных названий остановок соответствующего маршрута.
+ Названия остановок состоят лишь из латинских букв и символов подчёркивания.
 
  Формат вывода
 
- Для каждого запроса, кроме NEW_BUS, выведите соответствующий ответ на него:
+ Выведите ответ на каждый запрос в отдельной строке.
 
- На запрос BUSES_FOR_STOP stop выведите через пробел список автобусов, проезжающих через эту остановку,
- в том порядке, в котором они создавались командами NEW_BUS. Если остановка stop не существует, выведите No stop.
-
- На запрос STOPS_FOR_BUS bus выведите описания остановок маршрута bus в отдельных строках в том порядке,
- в котором они были заданы в соответствующей команде NEW_BUS.
- Описание каждой остановки stop должно иметь вид Stop stop: bus1 bus2 ..., где bus1 bus2 ... — список автобусов,
- проезжающих через остановку stop, в порядке, в котором они создавались командами NEW_BUS, за исключением исходного маршрута bus.
- Если через остановку stop не проезжает ни один автобус, кроме bus, вместо списка автобусов для неё выведите no interchange.
- Если маршрут bus не существует, выведите No bus.
-
- На запрос ALL_BUSES выведите описания всех автобусов в алфавитном порядке.
- Описание каждого маршрута bus должно иметь вид Bus bus: stop1 stop2 ..., где stop1 stop2 ... — список остановок автобуса bus в порядке,
- в котором они были заданы в соответствующей команде NEW_BUS. Если автобусы отсутствуют, выведите No buses.
-
- Предупреждение
-
- Условие задачи выше содержит много важных деталей. Если вы не уверены в том, что не упустили ни одной, перечитайте условие ещё раз.
+ Если маршрут с данным набором остановок уже существует,
+ в ответ на соответствующий запрос выведите Already exists for i,
+ где i — номер маршрута с таким набором остановок.
+ В противном случае нужно выделить введённому набору остановок новый номер i и вывести его в формате New bus i.
 
  Пример
 
  Ввод
 
- 10
- ALL_BUSES
- BUSES_FOR_STOP Marushkino
- STOPS_FOR_BUS 32K
- NEW_BUS 32 3 Tolstopaltsevo Marushkino Vnukovo
- NEW_BUS 32K 6 Tolstopaltsevo Marushkino Vnukovo Peredelkino Solntsevo Skolkovo
- BUSES_FOR_STOP Vnukovo
- NEW_BUS 950 6 Kokoshkino Marushkino Vnukovo Peredelkino Solntsevo Troparyovo
- NEW_BUS 272 4 Vnukovo Moskovsky Rumyantsevo Troparyovo
- STOPS_FOR_BUS 272
- ALL_BUSES
+ 4
+ 2 Marushkino Kokoshkino
+ 1 Kokoshkino
+ 2 Marushkino Kokoshkino
+ 2 Kokoshkino Marushkino
 
  Вывод
 
- No buses
- No stop
- No bus
- 32 32K
- Stop Vnukovo: 32 32K 950
- Stop Moskovsky: no interchange
- Stop Rumyantsevo: no interchange
- Stop Troparyovo: 950
- Bus 272: Vnukovo Moskovsky Rumyantsevo Troparyovo
- Bus 32: Tolstopaltsevo Marushkino Vnukovo
- Bus 32K: Tolstopaltsevo Marushkino Vnukovo Peredelkino Solntsevo Skolkovo
- Bus 950: Kokoshkino Marushkino Vnukovo Peredelkino Solntsevo Troparyovo
+ New bus 1
+ New bus 2
+ Already exists for 1
+ New bus 3
+
+ Замечание
+
+ Будьте внимательны при обновлении словаря: если одновременно в одном выражении вычислять размер словаря и добавлять в него новый элемент,
+ результат может отличаться от ожидаемого на единицу. Чтобы этого избежать, используйте временную переменную.
+
+ Например, вместо кода
+
+ map<string, int> m;
+ // ...
+ m["two"] = m.size();
+ // что нужно сделать раньше: вычислить size или добавить новый ключ?
+
+ стоит написать такой код:
+
+ map<string, int> m;
+ // ...
+ int new_value = m.size();
+ m["two"] = new_value;
+ // теперь всё однозначно: нужен размер до добавления элемента
  */
 
 #include <iostream>
@@ -76,98 +74,27 @@
 
 using namespace std;
 
-class BusStops {
-private:
-	map<string, vector<string>> m_stopsForBus;
-	map<string, vector<string>> m_busesForStops;
-public:
-
-	void newBus() {
-		string bus = "", stop = "";
-		int stopCount = 0;
-
-		cin >> bus >> stopCount;
-
-		for (int i = 0; i < stopCount; i++) {
-			cin >> stop;
-			m_stopsForBus[bus].push_back(stop);
-			m_busesForStops[stop].push_back(bus);
-		}
-	}
-
-	void busesForStop() {
-		string stop = "";
-		cin >> stop;
-
-		if (m_busesForStops.count(stop) == 0) {
-			cout << "No stop" << endl;
-		} else {
-			for (const auto &bus : m_busesForStops[stop]) {
-				cout << bus << ' ';
-			}
-			cout << endl;
-		}
-	}
-
-	void stopsForBus() {
-		string bus = "";
-		cin >> bus;
-
-		if (m_stopsForBus.count(bus) == 0) {
-			cout << "No bus" << endl;
-		} else {
-			for (const auto &stop : m_stopsForBus[bus]) {
-				cout << "Stop " << stop << ": ";
-				if (m_busesForStops[stop].size() == 1) {
-					cout << "no interchange" << endl;
-				} else {
-					for (const auto &anotherBus : m_busesForStops[stop]) {
-						if (anotherBus != bus) {
-							cout << anotherBus << ' ';
-						}
-					}
-					cout << endl;
-				}
-			}
-		}
-	}
-
-	void allBuses() {
-		if (m_stopsForBus.size() == 0) {
-			cout << "No buses" << endl;
-		} else {
-			for (const auto &bus : m_stopsForBus) {
-				cout << "Bus " << bus.first << ": ";
-				for (const auto &stop : bus.second) {
-					cout << stop << ' ';
-				}
-				cout << endl;
-			}
-		}
-	}
-};
-
 int main() {
 
-	string command = "";
-	int Q = 0;
-	BusStops busStops;
+	int Q = 0, busCounter = 0, stopAmount = 0;
+	string stop = "";
+	vector<string> stops;
+	map<vector<string>, int> busStops;
 
 	cin >> Q;
 
 	for (int i = 0; i < Q; i++) {
-		cin >> command;
-		if (command == "NEW_BUS") {
-			busStops.newBus();
+		stops.clear();
+		cin >> stopAmount;
+		for (int j = 0; j < stopAmount; j++) {
+			cin >> stop;
+			stops.push_back(stop);
 		}
-		if (command == "BUSES_FOR_STOP") {
-			busStops.busesForStop();
-		}
-		if (command == "STOPS_FOR_BUS") {
-			busStops.stopsForBus();
-		}
-		if (command == "ALL_BUSES") {
-			busStops.allBuses();
+		if (busStops.count(stops) == 0) {
+			busStops[stops] = ++busCounter;
+			cout << "New bus " << busCounter << endl;
+		} else {
+			cout << "Already exists for " << busStops[stops] << endl;
 		}
 	}
 
