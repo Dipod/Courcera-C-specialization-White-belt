@@ -1,103 +1,174 @@
 /*
- Два слова называются синонимами друг друга, если они имеют похожие значения.
- Реализуйте следующие операции над словарём синонимов:
+ Реализуйте систему хранения автобусных маршрутов. Вам нужно обрабатывать следующие запросы:
 
- ADD word1 word2 — добавить в словарь пару синонимов (word1, word2).
- COUNT word — узнать количество синонимов слова word.
- CHECK word1 word2 — проверить, являются ли слова word1 и word2 синонимами.
- Слова word1 и word2 считаются синонимами, если среди запросов ADD был хотя бы один запрос ADD word1 word2 или ADD word2 word1.
-
- Замечание
-
- Для упрощения, будем считать, что синонимы не обладают транзитивностью, то есть, если A - синоним B,
- а B - синоним C, то из этого НЕ следует, что A - синоним C.
+ NEW_BUS bus stop_count stop1 stop2 ... — добавить маршрут автобуса с названием bus и stop_count остановками с названиями stop1, stop2, ...
+ BUSES_FOR_STOP stop — вывести названия всех маршрутов автобуса, проходящих через остановку stop.
+ STOPS_FOR_BUS bus — вывести названия всех остановок маршрута bus со списком автобусов, на которые можно пересесть на каждой из остановок.
+ ALL_BUSES — вывести список всех маршрутов с остановками.
 
  Формат ввода
 
- Сначала вводится количество запросов Q, затем Q строк с описаниями запросов.
- Гарантируется, что в каждом запросе CHECK и ADD слова word1 и word2 различны.
- Все слова состоят лишь из латинских букв, цифр и символов подчёркивания.
+ В первой строке ввода содержится количество запросов Q, затем в Q строках следуют описания запросов.
+
+ Гарантируется, что все названия маршрутов и остановок состоят лишь из латинских букв, цифр и знаков подчёркивания.
+
+ Для каждого запроса NEW_BUS bus stop_count stop1 stop2 ... гарантируется, что маршрут bus отсутствует, количество остановок больше 0,
+ а после числа stop_count следует именно такое количество названий остановок, причём все названия в каждом списке различны.
 
  Формат вывода
 
- Для каждого запроса в соответствующей строке выведите ответ на него:
+ Для каждого запроса, кроме NEW_BUS, выведите соответствующий ответ на него:
 
- В ответ на запрос COUNT word выведите единственное целое число — количество синонимов слова word.
- В ответ на запрос CHECK word1 word2 выведите строку YES, если word1 и word2 являются синонимами, и NO в противном случае.
+ На запрос BUSES_FOR_STOP stop выведите через пробел список автобусов, проезжающих через эту остановку,
+ в том порядке, в котором они создавались командами NEW_BUS. Если остановка stop не существует, выведите No stop.
+
+ На запрос STOPS_FOR_BUS bus выведите описания остановок маршрута bus в отдельных строках в том порядке,
+ в котором они были заданы в соответствующей команде NEW_BUS.
+ Описание каждой остановки stop должно иметь вид Stop stop: bus1 bus2 ..., где bus1 bus2 ... — список автобусов,
+ проезжающих через остановку stop, в порядке, в котором они создавались командами NEW_BUS, за исключением исходного маршрута bus.
+ Если через остановку stop не проезжает ни один автобус, кроме bus, вместо списка автобусов для неё выведите no interchange.
+ Если маршрут bus не существует, выведите No bus.
+
+ На запрос ALL_BUSES выведите описания всех автобусов в алфавитном порядке.
+ Описание каждого маршрута bus должно иметь вид Bus bus: stop1 stop2 ..., где stop1 stop2 ... — список остановок автобуса bus в порядке,
+ в котором они были заданы в соответствующей команде NEW_BUS. Если автобусы отсутствуют, выведите No buses.
+
+ Предупреждение
+
+ Условие задачи выше содержит много важных деталей. Если вы не уверены в том, что не упустили ни одной, перечитайте условие ещё раз.
 
  Пример
 
  Ввод
 
- 8
- ADD program code
- COUNT cipher
- ADD code cipher
- COUNT code
- COUNT program
- CHECK code program
- CHECK program cipher
- CHECK cpp java
+ 10
+ ALL_BUSES
+ BUSES_FOR_STOP Marushkino
+ STOPS_FOR_BUS 32K
+ NEW_BUS 32 3 Tolstopaltsevo Marushkino Vnukovo
+ NEW_BUS 32K 6 Tolstopaltsevo Marushkino Vnukovo Peredelkino Solntsevo Skolkovo
+ BUSES_FOR_STOP Vnukovo
+ NEW_BUS 950 6 Kokoshkino Marushkino Vnukovo Peredelkino Solntsevo Troparyovo
+ NEW_BUS 272 4 Vnukovo Moskovsky Rumyantsevo Troparyovo
+ STOPS_FOR_BUS 272
+ ALL_BUSES
 
  Вывод
 
- 0
- 2
- 1
- YES
- NO
- NO
+ No buses
+ No stop
+ No bus
+ 32 32K
+ Stop Vnukovo: 32 32K 950
+ Stop Moskovsky: no interchange
+ Stop Rumyantsevo: no interchange
+ Stop Troparyovo: 950
+ Bus 272: Vnukovo Moskovsky Rumyantsevo Troparyovo
+ Bus 32: Tolstopaltsevo Marushkino Vnukovo
+ Bus 32K: Tolstopaltsevo Marushkino Vnukovo Peredelkino Solntsevo Skolkovo
+ Bus 950: Kokoshkino Marushkino Vnukovo Peredelkino Solntsevo Troparyovo
  */
 
 #include <iostream>
 #include <map>
 #include <string>
-#include <set>
+#include <vector>
 
 using namespace std;
 
-class Synonyms {
+class BusStops {
 private:
-	map<string, set<string>> m_synonyms;
+	map<string, vector<string>> m_stopsForBus;
+	map<string, vector<string>> m_busesForStops;
 public:
 
-	void add(const string &word1, const string &word2) {
-		m_synonyms[word1].insert(word2);
-		m_synonyms[word2].insert(word1);
+	void newBus() {
+		string bus = "", stop = "";
+		int stopCount = 0;
+
+		cin >> bus >> stopCount;
+
+		for (int i = 0; i < stopCount; i++) {
+			cin >> stop;
+			m_stopsForBus[bus].push_back(stop);
+			m_busesForStops[stop].push_back(bus);
+		}
 	}
 
-	void count(const string &word) {
-		cout << m_synonyms[word].size() << endl;
+	void busesForStop() {
+		string stop = "";
+		cin >> stop;
+
+		if (m_busesForStops.count(stop) == 0) {
+			cout << "No stop" << endl;
+		} else {
+			for (const auto &bus : m_busesForStops[stop]) {
+				cout << bus << ' ';
+			}
+			cout << endl;
+		}
 	}
 
-	void check(const string &word1, const string &word2) {
-		cout << (m_synonyms[word1].count(word2) > 0 ? "YES" : "NO") << endl;
+	void stopsForBus() {
+		string bus = "";
+		cin >> bus;
+
+		if (m_stopsForBus.count(bus) == 0) {
+			cout << "No bus" << endl;
+		} else {
+			for (const auto &stop : m_stopsForBus[bus]) {
+				cout << "Stop " << stop << ": ";
+				if (m_busesForStops[stop].size() == 1) {
+					cout << "no interchange" << endl;
+				} else {
+					for (const auto &anotherBus : m_busesForStops[stop]) {
+						if (anotherBus != bus) {
+							cout << anotherBus << ' ';
+						}
+					}
+					cout << endl;
+				}
+			}
+		}
+	}
+
+	void allBuses() {
+		if (m_stopsForBus.size() == 0) {
+			cout << "No buses" << endl;
+		} else {
+			for (const auto &bus : m_stopsForBus) {
+				cout << "Bus " << bus.first << ": ";
+				for (const auto &stop : bus.second) {
+					cout << stop << ' ';
+				}
+				cout << endl;
+			}
+		}
 	}
 };
 
 int main() {
 
-	string command = "", word1 = "", word2 = "";
+	string command = "";
 	int Q = 0;
-	Synonyms synonyms;
+	BusStops busStops;
 
 	cin >> Q;
 
-	while (Q > 0) {
+	for (int i = 0; i < Q; i++) {
 		cin >> command;
-		if (command == "ADD") {
-			cin >> word1 >> word2;
-			synonyms.add(word1, word2);
+		if (command == "NEW_BUS") {
+			busStops.newBus();
 		}
-		if (command == "COUNT") {
-			cin >> word1;
-			synonyms.count(word1);
+		if (command == "BUSES_FOR_STOP") {
+			busStops.busesForStop();
 		}
-		if (command == "CHECK") {
-			cin >> word1 >> word2;
-			synonyms.check(word1, word2);
+		if (command == "STOPS_FOR_BUS") {
+			busStops.stopsForBus();
 		}
-		Q--;
+		if (command == "ALL_BUSES") {
+			busStops.allBuses();
+		}
 	}
 
 	return 0;
