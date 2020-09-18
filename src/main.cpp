@@ -2,48 +2,63 @@
  Условие
 
  В стандартном потоке дана одна строка,
- состоящая из N + 1 целых чисел.
- Первым числом идёт само число N.
- Далее следуют ещё N чисел, обозначим их за массив A.
- Между собой числа разделены пробелом.
+ состоящая из числа N и следующих за ним N строк S.
+ Между собой число и строки разделены пробелом.
 
- Отсортируйте массив А по модулю и выведите его в стандартный поток.
+ Отсортируйте строки S в лексикографическом порядке по возрастанию,
+ игнорируя регистр букв, и выведите их в стандартный поток вывода.
 
  Ограничения
 
  0 <= N <= 1000
- -1000000 <= A[i] <= 1000000
+ 1 <= |S| <= 15
+ Каждая строка S[i] может состоять из следующих символов: [0-9,a-z,A-Z]
 
  Примеры
-
  stdin		stdout
- 2 -4 3		3 -4
- 3 1 -3 2	1 2 -3
+ 2 q A		A q
+ 3 a C b	a b C
+
+ Подсказка
+
+ Обратите внимание на функцию tolower.
  */
 
 #include <iostream>
 #include <algorithm>
+#include <string>
+#include <locale>
 #include <vector>
 
 using namespace std;
 
-int main() {
+string lowerString(const string &s) {
+	string lowerS = "";
+	locale loc;
 
-	int N = 0, number = 0;
-	vector<int> numbers;
-
-	cin >> N;
-
-	for (int i = 0; i < N; i++) {
-		cin >> number;
-		numbers.push_back(number);
+	for (auto &c : s) {
+		lowerS += tolower(c, loc);
 	}
 
-	sort(begin(numbers), end(numbers), [](const int &x1, const int &x2) {
-		return (x1 < 0 ? -x1 : x1) < (x2 < 0 ? -x2 : x2);
-	});
+	return lowerS;
+}
 
-	for (const auto &i : numbers) {
+int main() {
+
+	int N = 0;
+	cin >> N;
+	vector<string> strings(N);
+
+	for (auto &s : strings) {
+		cin >> s;
+	}
+
+	sort(begin(strings), end(strings),
+			[](const string &left, const string &right) {
+				return lowerString(left) < lowerString(right);
+			});
+
+	for (const auto &i : strings) {
 		cout << i << ' ';
 	}
 
