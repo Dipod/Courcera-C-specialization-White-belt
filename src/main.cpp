@@ -1,15 +1,6 @@
 /*
- Реализуйте рассказанный на лекции класс Function, позволяющий создавать, вычислять и инвертировать функцию, состоящую из следующих элементарных операций:
-
- прибавить вещественное число x;
- вычесть вещественное число x.
-
- При этом необходимо объявить константными все методы, которые по сути такими являются.
-
- Замечание
-
- Более детальное описание задачи с подробным разбором реализации вышеуказанного класса приводится в двух предшествующих видеолекциях.
- На проверку пришлите файл, содержащий реализацию вышеуказанного класса Function.
+ Добавьте в класс Function из задачи «Обратимая функция» обработку умножения ('*') и деления ('/').
+ Гарантируется отсутствие элементарных операций умножения и деления на 0.
 
  Пример
 
@@ -30,7 +21,8 @@
  Function MakeWeightFunction(const Params& params,
  const Image& image) {
  Function function;
- function.AddPart('-', image.freshness * params.a + params.b);
+ function.AddPart('*', params.a);
+ function.AddPart('-', image.freshness * params.b);
  function.AddPart('+', image.rating * params.c);
  return function;
  }
@@ -52,14 +44,14 @@
  Image image = {10, 2, 6};
  Params params = {4, 2, 6};
  cout << ComputeImageWeight(params, image) << endl;
- cout << ComputeQualityByWeight(params, image, 46) << endl;
+ cout << ComputeQualityByWeight(params, image, 52) << endl;
  return 0;
  }
 
  Вывод
 
- 36
- 20
+ 72
+ 5
  */
 
 #include <iostream>
@@ -75,17 +67,37 @@ public:
 		value = new_value;
 	}
 	double Apply(const double &source_value) const {
-		if (operation == '+') {
+
+		switch (operation) {
+		case '+':
 			return source_value + value;
-		} else {
+			break;
+		case '-':
 			return source_value - value;
+			break;
+		case '*':
+			return source_value * value;
+			break;
+		case '/':
+			return source_value / value;
+			break;
 		}
 	}
 	void Invert() {
-		if (operation == '+') {
+
+		switch (operation) {
+		case '+':
 			operation = '-';
-		} else if (operation == '-') {
+			break;
+		case '-':
 			operation = '+';
+			break;
+		case '*':
+			operation = '/';
+			break;
+		case '/':
+			operation = '*';
+			break;
 		}
 	}
 private:
