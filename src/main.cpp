@@ -1,78 +1,29 @@
 /*
- Реализуйте класс ReversibleString, хранящий строку и поддерживающий методы Reverse для переворота строки и ToString для получения строки.
- Пример
- Код
+ Определите тип Incognizable, для которого следующий код будет корректен:
 
  int main() {
- ReversibleString s("live");
- s.Reverse();
- cout << s.ToString() << endl;
-
- s.Reverse();
- const ReversibleString& s_ref = s;
- string tmp = s_ref.ToString();
- cout << tmp << endl;
-
- ReversibleString empty;
- cout << '"' << empty.ToString() << '"' << endl;
-
+ Incognizable a;
+ Incognizable b = {};
+ Incognizable c = {0};
+ Incognizable d = {0, 1};
  return 0;
  }
-
- Вывод
-
- evil
- live
- ""
 
  */
 
 #include <iostream>
-#include <string>
 
 using namespace std;
 
-class ReversibleString {
-public:
-	ReversibleString() {
-		s = "";
-	}
-
-	ReversibleString(const string &new_s) {
-		s = new_s;
-	}
-
-	void Reverse() {
-		int begin = 0, end = s.size() - 1;
-		while (begin < end) {
-			auto tmp = s[begin];
-			s[begin] = s[end];
-			s[end] = tmp;
-			begin++;
-			end--;
-		}
-	}
-
-	string ToString() const {
-		return s;
-	}
-
-private:
-	string s;
+struct Incognizable {
+	int x = 0;
+	int y = 0;
 };
 
 int main() {
-	ReversibleString s("live");
-	s.Reverse();
-	cout << s.ToString() << endl;
-
-	s.Reverse();
-	const ReversibleString &s_ref = s;
-	string tmp = s_ref.ToString();
-	cout << tmp << endl;
-
-	ReversibleString empty;
-	cout << '"' << empty.ToString() << '"' << endl;
-
+	Incognizable a;
+	Incognizable b = { };
+	Incognizable c = { 0 };
+	Incognizable d = { 0, 1 };
 	return 0;
 }
