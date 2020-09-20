@@ -1,126 +1,58 @@
 /*
- Добавьте в класс Function из задачи «Обратимая функция» обработку умножения ('*') и деления ('/').
- Гарантируется отсутствие элементарных операций умножения и деления на 0.
+ В этом задании вам предстоит написать две небольшие программы.
+ Каждый пункт - отдельная задача, решение отправляйте в поле с соответствующим номером.
+
+ Часть 1
+
+ Ваша программа должна считать содержимое файла input.txt и напечатать его на экран без изменений.
+ Гарантируется, что содержимое файла input.txt заканчивается переводом строки.
 
  Пример
 
- Код
+ input.txt
 
- struct Image {
- double quality;
- double freshness;
- double rating;
- };
+ Keep calm
+ and
+ learn C++
 
- struct Params {
- double a;
- double b;
- double c;
- };
+ stdout
 
- Function MakeWeightFunction(const Params& params,
- const Image& image) {
- Function function;
- function.AddPart('*', params.a);
- function.AddPart('-', image.freshness * params.b);
- function.AddPart('+', image.rating * params.c);
- return function;
- }
+ Keep calm
+ and
+ learn C++
 
- double ComputeImageWeight(const Params& params, const Image& image) {
- Function function = MakeWeightFunction(params, image);
- return function.Apply(image.quality);
- }
+ Часть 2
 
- double ComputeQualityByWeight(const Params& params,
- const Image& image,
- double weight) {
- Function function = MakeWeightFunction(params, image);
- function.Invert();
- return function.Apply(weight);
- }
+ Снова считайте все содержимое файла input.txt, но на этот раз выведите его в файл output.txt .
+ Точно так же гарантируется, что содержимое файла input.txt заканчивается переводом строки.
 
- int main() {
- Image image = {10, 2, 6};
- Params params = {4, 2, 6};
- cout << ComputeImageWeight(params, image) << endl;
- cout << ComputeQualityByWeight(params, image, 52) << endl;
- return 0;
- }
+ Пример
 
- Вывод
+ input.txt
 
- 72
- 5
+ Keep calm
+ and
+ learn C++
+
+ output.txt
+
+ Keep calm
+ and
+ learn C++
  */
 
 #include <iostream>
-#include <vector>
-#include <algorithm>
+#include <fstream>
 
 using namespace std;
 
-class FunctionPart {
-public:
-	FunctionPart(const char &new_operation, const double &new_value) {
-		operation = new_operation;
-		value = new_value;
-	}
-	double Apply(const double &source_value) const {
-
-		switch (operation) {
-		case '+':
-			return source_value + value;
-			break;
-		case '-':
-			return source_value - value;
-			break;
-		case '*':
-			return source_value * value;
-			break;
-		case '/':
-			return source_value / value;
-			break;
+int main() {
+	ifstream input("input.txt");
+	string line;
+	if (input.is_open()) {
+		while (getline(input, line)) {
+			cout << line << endl;
 		}
 	}
-	void Invert() {
-
-		switch (operation) {
-		case '+':
-			operation = '-';
-			break;
-		case '-':
-			operation = '+';
-			break;
-		case '*':
-			operation = '/';
-			break;
-		case '/':
-			operation = '*';
-			break;
-		}
-	}
-private:
-	char operation;
-	double value;
-};
-class Function {
-public:
-	void AddPart(const char &operation, const double &value) {
-		parts.push_back( { operation, value });
-	}
-	double Apply(double value) const {
-		for (const FunctionPart &part : parts) {
-			value = part.Apply(value);
-		}
-		return value;
-	}
-	void Invert() {
-		for (FunctionPart &part : parts) {
-			part.Invert();
-		}
-		reverse(begin(parts), end(parts));
-	}
-private:
-	vector<FunctionPart> parts;
-};
+	return 0;
+}
