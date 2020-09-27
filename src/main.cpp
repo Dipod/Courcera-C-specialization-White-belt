@@ -1,185 +1,110 @@
 /*
- Итак, теперь у нас с вами есть полноценный тип для представления обыкновенных дробей:
- класс Rational интегрирован в язык с помощью перегрузки операторов и не позволяет выполнять
- некорректные операции за счёт выбрасывания исключений.
- Давайте на основе класса Rational создадим простой калькулятор для обыкновенных дробей.
+ Вам дана функция string AskTimeServer(), про которую известно следующее:
 
- Вам надо написать программу, которая считывает из стандартного ввода одну строку в формате
- ДРОБЬ_1 операция ДРОБЬ_2. ДРОБЬ_1 и ДРОБЬ_2 имеют формат X/Y, где X — целое, а Y — целое неотрицательное число.
- операция — это один из символов '+', '-', '*', '/'.
+ в процессе своей работы она обращается по сети к удалённому серверу, запрашивая текущее время;
+ если обращение к серверу прошло успешно, функция возвращает текущее время в виде строки;
+ если в процессе обращения к серверу возникла сетевая проблема, функция выбрасывает исключение system_error;
+ функция может выбрасывать другие исключения, чтобы сообщить о других проблемах.
 
- Если ДРОБЬ_1 или ДРОБЬ_2 является некорректной обыкновенной дробью,
- ваша программа должна вывести в стандартный вывод сообщение "Invalid argument".
- Если считанная операция — это деление на ноль, выведите в стандартный вывод сообщение "Division by zero".
- В противном случае выведите результат операции.
+ Используя функцию AskTimeServer, напишите класс TimeServer со следующим интерфейсом:
 
- Пример
- stdin		stdout
- 1/2 + 1/3	5/6
- 1/2 + 5/0	Invalid argument
- 4/5 / 0/8	Division by zero
+ class TimeServer {
+ public:
+ string GetCurrentTime();
+ private:
+ string last_fetched_time = "00:00:00";
+ };
+
+ Метод GetCurrentTime должен вести себя так:
+
+ он должен вызвать функцию AskTimeServer, записать её результат в поле last_fetched_time и вернуть значение этого поля;
+ если AskTimeServer выбросила исключение system_error, метод GetCurrentTime должен его поймать и вернуть текущее значение поля last_fetched_time.
+ Таким образом мы скрываем от пользователя сетевые проблемы, возвращая значение, которое было получено при последнем успешном обращении к серверу;
+ если AskTimeServer выбросила другое исключение, метод GetCurrentTime должен пробросить его дальше,
+ потому что в рамках класса TimeServer мы не знаем, как обрабатывать проблемы, не связанные со сбоями сети.
+
+ Как выполнять задание
+
+ Вам дан файл, содержащий заготовку класса TimeServer. В нём вам надо реализовать метод GetCurrentTime так, как описано выше.
+ Файл содержит пустую функцию AskTimeServer. Для тестирования своей реализации вы можете пробовать добавлять разные команды в её тело:
+
+ возврат строки;
+ выброс исключения system_error (класс system_error принимает в конструкторе параметр типа error_code,
+ поэтому самый простой способ выбросить это исключение — throw system_error(error_code());,
+ подробнее см. https://en.cppreference.com/w/cpp/error/system_error );
+ выброс других исключений.
+
+ #include <iostream>
+ #include <exception>
+ #include <string>
+ using namespace std;
+
+ string AskTimeServer() {
+ //Для тестирования повставляйте сюда код, реализующий различное поведение этой функии:
+ //нормальный возврат строкового значения
+ //выброс исключения system_error
+ //выброс другого исключения с сообщением.
+ }
+
+ class TimeServer {
+ public:
+ string GetCurrentTime() {
+ //Реализуйте этот метод:
+ //если AskTimeServer() вернула значение, запишите его в last_fetched_time и верните
+ //если AskTimeServer() бросила исключение system_error, верните текущее значение
+ //поля last_fetched_time
+ //если AskTimeServer() бросила другое исключение, пробросьте его дальше.
+ }
+
+ private:
+ string last_fetched_time = "00:00:00";
+ };
+
+ int main() {
+ // Меняя реализацию функции AskTimeServer, убедитесь, что это код работает корректно
+ TimeServer ts;
+ try {
+ cout << ts.GetCurrentTime() << endl;
+ } catch (exception& e) {
+ cout << "Exception got: " << e.what() << endl;
+ }
+ return 0;
+ }
  */
 
 #include <iostream>
-#include <algorithm>
-#include <sstream>
 #include <exception>
-
+#include <string>
 using namespace std;
 
-int lcm(const int &first, const int &second) {
-	return (first / __gcd(first, second)) * second;
+string AskTimeServer() {
+	//throw exception();
+	//throw system_error(error_code());
+	return "10:50:49";
 }
 
-class Rational {
+class TimeServer {
 public:
-	Rational() {
-		m_numerator = 0;
-		m_denominator = 1;
-	}
-
-	Rational(const int &numerator, const int &denominator) {
-		if (denominator == 0) {
-			throw invalid_argument("Invalid argument");
+	string GetCurrentTime() {
+		try {
+			last_fetched_time = AskTimeServer();
+		} catch (system_error &ex) {
+			//return last fetched time
 		}
-		if (numerator == 0) {
-			m_numerator = 0;
-			m_denominator = 1;
-			return;
-		}
-
-		int divisor = __gcd(numerator, denominator);
-		m_numerator = numerator / divisor;
-		m_denominator = denominator / divisor;
-
-		if (m_denominator < 0) {
-			m_numerator = -m_numerator;
-			m_denominator = -m_denominator;
-		}
-	}
-
-	int Numerator() const {
-		return m_numerator;
-	}
-
-	int Denominator() const {
-		return m_denominator;
+		return last_fetched_time;
 	}
 
 private:
-	int m_numerator;
-	int m_denominator;
+	string last_fetched_time = "00:00:00";
 };
 
-bool operator==(const Rational &lhs, const Rational &rhs) {
-	return (lhs.Numerator() == rhs.Numerator()
-			&& lhs.Denominator() == rhs.Denominator());
-}
-
-Rational operator+(const Rational &lhs, const Rational &rhs) {
-	if (lhs.Denominator() == rhs.Denominator()) {
-		return Rational(lhs.Numerator() + rhs.Numerator(), lhs.Denominator());
-	} else {
-		int new_denominator = lcm(lhs.Denominator(), rhs.Denominator());
-		int new_numerator = (new_denominator / lhs.Denominator())
-				* lhs.Numerator()
-				+ (new_denominator / rhs.Denominator()) * rhs.Numerator();
-		return Rational(new_numerator, new_denominator);
-	}
-}
-
-Rational operator-(const Rational &lhs, const Rational &rhs) {
-	if (lhs.Denominator() == rhs.Denominator()) {
-		return Rational(lhs.Numerator() - rhs.Numerator(), lhs.Denominator());
-	} else {
-		int new_denominator = lcm(lhs.Denominator(), rhs.Denominator());
-		int new_numerator = (new_denominator / lhs.Denominator())
-				* lhs.Numerator()
-				- (new_denominator / rhs.Denominator()) * rhs.Numerator();
-		return Rational(new_numerator, new_denominator);
-	}
-}
-
-Rational operator*(const Rational &lhs, const Rational &rhs) {
-	return Rational(lhs.Numerator() * rhs.Numerator(),
-			lhs.Denominator() * rhs.Denominator());
-}
-
-Rational operator/(const Rational &lhs, const Rational &rhs) {
-	if (rhs.Numerator() == 0) {
-		throw domain_error("Division by zero");
-	}
-
-	return Rational(lhs.Numerator() * rhs.Denominator(),
-			lhs.Denominator() * rhs.Numerator());
-}
-
-istream& operator>>(istream &stream, Rational &fraction) {
-	int numerator = fraction.Numerator(), denominator = fraction.Denominator();
-	char separator = ' ';
-
-	stream >> numerator >> separator >> denominator;
-
-	if (!stream.fail() && separator == '/') {
-		fraction = Rational(numerator, denominator);
-	}
-
-	return stream;
-}
-
-ostream& operator<<(ostream &stream, const Rational &fraction) {
-	stream << fraction.Numerator() << '/' << fraction.Denominator();
-	return stream;
-}
-
-bool operator<(const Rational &lhs, const Rational &rhs) {
-	if (lhs.Denominator() == rhs.Denominator()) {
-		return lhs.Numerator() < rhs.Numerator();
-	} else {
-		int new_denominator = lcm(lhs.Denominator(), rhs.Denominator());
-		return (new_denominator / lhs.Denominator()) * lhs.Numerator()
-				< (new_denominator / rhs.Denominator()) * rhs.Numerator();
-	}
-}
-
 int main() {
-
-	Rational lhs, rhs;
-	char operation;
-
+	// Меняя реализацию функции AskTimeServer, убедитесь, что это код работает корректно
+	TimeServer ts;
 	try {
-		cin >> lhs >> operation >> rhs;
-	} catch (invalid_argument &ex) {
-		cout << ex.what();
-		return 0;
+		cout << ts.GetCurrentTime() << endl;
+	} catch (exception &e) {
+		cout << "Exception got: " << e.what() << endl;
 	}
-
-	if (cin.fail()) {
-		cout << "Invalid argument";
-		return 0;
-	}
-
-	switch (operation) {
-	case '/':
-		try {
-			cout << lhs / rhs;
-		} catch (domain_error &ex) {
-			cout << ex.what();
-		}
-		break;
-	case '*':
-		cout << lhs * rhs;
-		break;
-	case '-':
-		cout << lhs - rhs;
-		break;
-	case '+':
-		cout << lhs + rhs;
-		break;
-	default:
-		cout << "Invalid argument";
-		break;
-	}
-
 	return 0;
 }
